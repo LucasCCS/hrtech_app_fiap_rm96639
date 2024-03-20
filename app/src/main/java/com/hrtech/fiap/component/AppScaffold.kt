@@ -51,6 +51,7 @@ import com.hrtech.fiap.R
 @Composable
 fun AppScaffold(
     content: @Composable (PaddingValues) -> Unit = { },
+    searchInput: @Composable (PaddingValues) -> Unit = { },
     navController: NavHostController
 ) {
     var isCenterButtonVisible by remember { mutableStateOf(true) }
@@ -89,16 +90,7 @@ fun AppScaffold(
 
                             ) {
                             Row (verticalAlignment = Alignment.CenterVertically) {
-                                OutlinedTextField(
-                                    value = "",
-                                    onValueChange = { /* Mudança no campo de busca */ },
-                                    placeholder = { Text("Pesquisar") },
-                                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                                        focusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                                        unfocusedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                                        disabledBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                                    )
-                                )
+                                searchInput(PaddingValues(0.dp))
                             }
                         }
 

@@ -18,6 +18,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hrtech.fiap.R
 import com.hrtech.fiap.model.JobOpportunity
@@ -48,8 +50,11 @@ fun JobOpportunityComponent(item: JobOpportunity, onClick: () -> Unit) {
                         .size(50.dp)
                 )
                 Column( modifier = Modifier.padding(horizontal = 10.dp)) {
-                    Text("Desenvolvedor Backend Java")
-                    Text("FIAP")
+                    Text(
+                        text = item.title,
+                        style = TextStyle(fontWeight = FontWeight.Bold)
+                    )
+                    Text(item.company.name)
                 }
             }
         }

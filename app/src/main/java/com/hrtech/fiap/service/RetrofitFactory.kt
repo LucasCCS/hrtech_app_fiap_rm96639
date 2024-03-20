@@ -18,4 +18,8 @@ class RetrofitFactory {
         return retrofitFactory.create(JobOpportunityService::class.java)
     }
 
+    fun getAuthService(): AuthService {
+        return retrofitFactory.create(AuthService::class.java)
+    }
+
 }

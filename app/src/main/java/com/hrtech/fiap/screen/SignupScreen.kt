@@ -1,5 +1,6 @@
 package com.hrtech.fiap.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,13 +30,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.hrtech.fiap.model.AuthenticationResponse
+import com.hrtech.fiap.model.Credentials
+import com.hrtech.fiap.service.RetrofitFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 @Composable()
 fun SignupScreen(navController: NavHostController) {
-    var email by remember { mutableStateOf(TextFieldValue()) }
+    var username by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
     var confirmPassowrd by remember { mutableStateOf(TextFieldValue()) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
+    SnackbarHost(
+        hostState = snackbarHostState,
+        modifier = Modifier.padding(16.dp)
+    ) {snackbarData ->
+
+        Snackbar(
+            snackbarData = snackbarData,
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -47,9 +69,9 @@ fun SignupScreen(navController: NavHostController) {
         }
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("E-mail") },
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Usuário") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
@@ -77,7 +99,8 @@ fun SignupScreen(navController: NavHostController) {
 
         Button(
             onClick = {
-                navController.navigate("home")
+                val credentials = Credentials(username = username.text, password = password.text)
+                doSignup(credentials, navController, snackbarHostState)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -94,6 +117,25 @@ fun SignupScreen(navController: NavHostController) {
             }
         }
     }
+}
+
+fun doSignup(credentials: Credentials, navController: NavHostController, snackbarHostState: SnackbarHostState) {
+    RetrofitFactory().getAuthService().signup(credentials).enqueue(object :
+        Callback<AuthenticationResponse> {
+        override fun onResponse(call: Call<AuthenticationResponse>, response: Response<AuthenticationResponse>) {
+
+            if (response.isSuccessful) {
+                Log.d("SignupAPI", "sucesso")
+                navController.navigate("opportunity")
+
+            } else {
+                Log.d("SignupAPI", "Erro ")
+            }
+        }
+        override fun onFailure(call: Call<AuthenticationResponse>, t: Throwable) {
+            Log.d("SignupAPIFailure", "Falha de conexão com a API: ${t.message}")
+        }
+    })
 }
 
 @Preview(showSystemUi = true)
